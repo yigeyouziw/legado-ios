@@ -2,8 +2,15 @@ name: Verify iOS project
 
 on:
   push:
+    branches: ['**']
+    tags: ['v*']
   pull_request:
   workflow_dispatch:
+    inputs:
+      build_unsigned_ipa:
+        description: Build an unsigned iPhone IPA for separate signing
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -13,7 +20,9 @@ jobs:
     runs-on: xcode-27
     timeout-minutes: 25
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Test Swift core
         run: swift test
       - name: Build for iOS Simulator
@@ -21,3 +30,87 @@ jobs:
           xcodebuild -project Legado.xcodeproj -scheme Legado
           -configuration Debug -destination 'generic/platform=iOS Simulator'
           -derivedDataPath build/DerivedData CODE_SIGNING_ALLOWED=NO build
+      - name: Package iOS Simulator app
+        run: |
+          app=build/DerivedData/Build/Products/Debug-iphonesimulator/Legado.app
+          test -x "$app/Legado"
+          mkdir -p build/artifacts
+          ditto -c -k --norsrc --keepParent "$app" build/artifacts/Legado-iOS-Simulator.zip
+      - name: Upload iOS Simulator app
+        uses: actions/upload-artifact@v7
+        with:
+          path: build/artifacts/Legado-iOS-Simulator.zip
+          archive: false
+          if-no-files-found: error
+      - name: Build unsigned iPhone app
+        if: startsWith(github.ref, 'refs/tags/v') || inputs.build_unsigned_ipa
+        run: >-
+          xcodebuild -project Legado.xcodeproj -scheme Legado
+          -configuration Release -destination 'generic/platform=iOS'
+          -derivedDataPath build/DeviceDerivedData CODE_SIGNING_ALLOWED=NO build
+      - name: Package unsigned iPhone IPA
+        if: startsWith(github.ref, 'refs/tags/v') || inputs.build_unsigned_ipa
+        run: |
+          app=build/DeviceDerivedData/Build/Products/Release-iphoneos/Legado.app
+          test -x "$app/Legado"
+          mkdir -p build/iphone-package/Payload
+          ditto "$app" build/iphone-package/Payload/Legado.app
+          ditto -c -k --norsrc --keepParent \
+            build/iphone-package/Payload build/artifacts/Legado-iOS-unsigned.ipa
+      - name: Upload unsigned iPhone IPA
+        if: startsWith(github.ref, 'refs/tags/v') || inputs.build_unsigned_ipa
+        uses: actions/upload-artifact@v7
+        with:
+          path: build/artifacts/Legado-iOS-unsigned.ipa
+          archive: false
+          if-no-files-found: error
+
+  release:
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    needs: xcode
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    concurrency:
+      group: release-${{ github.ref }}
+    steps:
+      - name: Download iOS Simulator ZIP
+        uses: actions/download-artifact@v8
+        with:
+          name: Legado-iOS-Simulator.zip
+          path: release-assets
+          skip-decompress: true
+      - name: Download unsigned iPhone IPA
+        uses: actions/download-artifact@v8
+        with:
+          name: Legado-iOS-unsigned.ipa
+          path: release-assets
+          skip-decompress: true
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          simulator=release-assets/Legado-iOS-Simulator.zip
+          iphone=release-assets/Legado-iOS-unsigned.ipa
+          test -s "$simulator"
+          test -s "$iphone"
+
+          if ! current=$(gh release view "$RELEASE_TAG" --json assets,isDraft --jq '.isDraft, .assets[].name'); then
+            gh release create "$RELEASE_TAG" "$simulator" "$iphone" \
+              --verify-tag --generate-notes \
+              --notes '模拟器 ZIP 用于 macOS 上的 iOS 模拟器。真机 IPA 需要签名后才能安装。'
+            exit 0
+          fi
+
+          read -r is_draft <<< "$current"
+          for file in "$simulator" "$iphone"; do
+            if ! grep -Fxq -- "${file##*/}" <<< "$current"; then
+              gh release upload "$RELEASE_TAG" "$file"
+            fi
+          done
+          if [[ "$is_draft" == true ]]; then
+            gh release edit "$RELEASE_TAG" --draft=false
+          fi

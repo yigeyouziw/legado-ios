@@ -31,7 +31,15 @@ xcodebuild -project Legado.xcodeproj -scheme Legado \
   -derivedDataPath build/DerivedData CODE_SIGNING_ALLOWED=NO build
 ```
 
-仓库中的 `Verify iOS project` 工作流使用 GitHub 的 `xcode-27` runner，执行 Swift 核心测试和 iOS 模拟器目标构建。本次交付在 Windows 的 WSL 环境通过 18 项 Swift 核心测试，并检查了 iOS 源码语法。iOS 界面、模拟器构建和签名流程仍需要在 Mac 上验证。
+## 在 GitHub Actions 上构建
+
+`Verify iOS project` 工作流使用 `xcode-27` 运行核心测试和 iOS 模拟器构建。运行成功后，在该次运行的 **Summary → Artifacts** 下载 `Legado-iOS-Simulator.zip`，解压得到可在 Mac 上运行的模拟器应用。
+
+如果要下载 iPhone 真机构建，在 **Actions → Verify iOS project → Run workflow** 勾选 `Build an unsigned iPhone IPA for separate signing`。运行成功后下载 `Legado-iOS-unsigned.ipa`。需要为目标设备签名后才能安装。
+
+推送 `v` 开头的版本标签会构建两个包并发布到 [GitHub Releases](https://github.com/yigeyouziw/legado-ios/releases)。将标签打在包含此工作流的版本提交上，例如 `git tag v1.0.0`，然后执行 `git push origin v1.0.0`。构建成功后可在对应 Release 的 **Assets** 直接下载。
+
+[首次 GitHub Actions 运行](https://github.com/yigeyouziw/legado-ios/actions/runs/43724772570)已通过核心测试和模拟器构建。产物上传、真机未签名构建和 Release 发布仍待 GitHub 验证。
 
 ## 许可
 
