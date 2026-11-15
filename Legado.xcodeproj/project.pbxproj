@@ -1,0 +1,178 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {};
+	objectVersion = 77;
+	objects = {
+		100000000000000000000001 = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2700;
+				LastUpgradeCheck = 2700;
+				TargetAttributes = { 100000000000000000000002 = {CreatedOnToolsVersion = 27.0; }; };
+			};
+			buildConfigurationList = 10000000000000000000000A;
+			developmentRegion = "zh-Hans";
+			hasScannedForEncodings = 0;
+			knownRegions = ("zh-Hans", en, Base);
+			mainGroup = 100000000000000000000003;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (100000000000000000000010);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 100000000000000000000004;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (100000000000000000000002);
+		};
+		100000000000000000000002 = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 10000000000000000000000B;
+			buildPhases = (100000000000000000000007, 100000000000000000000008, 100000000000000000000009);
+			buildRules = ();
+			dependencies = ();
+			fileSystemSynchronizedGroups = (100000000000000000000005);
+			name = Legado;
+			packageProductDependencies = (100000000000000000000011);
+			productName = Legado;
+			productReference = 100000000000000000000006;
+			productType = "com.apple.product-type.application";
+		};
+		100000000000000000000003 = {
+			isa = PBXGroup;
+			children = (100000000000000000000005, 100000000000000000000014, 100000000000000000000004);
+			sourceTree = "<group>";
+		};
+		100000000000000000000004 = {
+			isa = PBXGroup;
+			children = (100000000000000000000006);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		100000000000000000000005 = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			explicitFileTypes = {};
+			explicitFolders = ();
+			name = LegadoApp;
+			path = Sources/LegadoApp;
+			sourceTree = "<group>";
+		};
+		100000000000000000000006 = {
+			isa = PBXFileReference;
+			explicitFileType = wrapper.application;
+			includeInIndex = 0;
+			path = Legado.app;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		100000000000000000000007 = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = ();
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		100000000000000000000008 = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (100000000000000000000012);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		100000000000000000000009 = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (100000000000000000000013);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		10000000000000000000000A = {
+			isa = XCConfigurationList;
+			buildConfigurations = (10000000000000000000000C, 10000000000000000000000D);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		10000000000000000000000B = {
+			isa = XCConfigurationList;
+			buildConfigurations = (10000000000000000000000E, 10000000000000000000000F);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		10000000000000000000000C = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_TESTABILITY = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		10000000000000000000000D = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		10000000000000000000000E = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 100000000000000000000016;
+			buildSettings = { ENABLE_PREVIEWS = YES; };
+			name = Debug;
+		};
+		10000000000000000000000F = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 100000000000000000000016;
+			buildSettings = {};
+			name = Release;
+		};
+		100000000000000000000010 = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ".";
+		};
+		100000000000000000000011 = {
+			isa = XCSwiftPackageProductDependency;
+			package = 100000000000000000000010;
+			productName = LegadoCore;
+		};
+		100000000000000000000012 = {
+			isa = PBXBuildFile;
+			productRef = 100000000000000000000011;
+		};
+		100000000000000000000013 = {
+			isa = PBXBuildFile;
+			fileRef = 100000000000000000000017;
+		};
+		100000000000000000000014 = {
+			isa = PBXGroup;
+			children = (100000000000000000000015, 100000000000000000000016, 100000000000000000000017);
+			path = Config;
+			sourceTree = "<group>";
+		};
+		100000000000000000000015 = {
+			isa = PBXFileReference;
+			lastKnownFileType = text.plist.xml;
+			path = Info.plist;
+			sourceTree = "<group>";
+		};
+		100000000000000000000016 = {
+			isa = PBXFileReference;
+			lastKnownFileType = text.xcconfig;
+			path = App.xcconfig;
+			sourceTree = "<group>";
+		};
+		100000000000000000000017 = {
+			isa = PBXFileReference;
+			lastKnownFileType = text.xml;
+			path = PrivacyInfo.xcprivacy;
+			sourceTree = "<group>";
+		};
+	};
+	rootObject = 100000000000000000000001;
+}
